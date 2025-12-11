@@ -1,0 +1,62 @@
+version: '3.8'
+
+services:
+  npm:
+    image: 'jc21/nginx-proxy-manager:latest'
+    restart: unless-stopped
+
+    ports:
+      - '80:80'
+      - '443:443'
+      - '81:81'
+
+    environment:
+      TZ: "Asia/Islamabad"
+    networks:
+      - cricket_network
+
+    volumes:
+      - ./npm_data:/data
+      - ./npm_letsencrypt:/etc/letsencrypt
+  
+  # Flask Application
+  server:
+    image: 'muzammilahmedbhatti/mlops_project_cricket-flask-app:latest'
+    container_name: mlops_proj
+    restart: unless-stopped
+
+    environment:
+      DAGSHUB_USERNAME: ${DAGSHUB_USERNAME}
+      DAGSHUB_REPO: ${DAGSHUB_REPO}
+      DAGSHUB_TOKEN: ${DAGSHUB_TOKEN}
+      MLFLOW_TRACKING_URI: ${MLFLOW_TRACKING_URI}
+      MODEL_NAME: ${MODEL_NAME}
+      MODEL_STAGE: ${MODEL_STAGE}
+      MONGO_INITDB_ROOT_USERNAME: ${MONGO_INITDB_ROOT_USERNAME}
+      MONGO_INITDB_ROOT_PASSWORD: ${MONGO_INITDB_ROOT_PASSWORD}
+      MONGO_INITDB_DATABASE: ${MONGO_INITDB_DATABASE}
+      FLASK_ENV: ${FLASK_ENV}
+      FLASK_PORT: ${FLASK_PORT}
+      SECRET_KEY: ${SECRET_KEY}
+      MLFLOW_TRACKING_USERNAME: ${DAGSHUB_USERNAME}
+      MLFLOW_TRACKING_PASSWORD: ${DAGSHUB_TOKEN}
+    ports:
+      - "3000:${FLASK_PORT}"
+    volumes:
+      - ./app/static/uploads:/app/static/uploads
+    networks:
+      - cricket_network
+    healthcheck:
+      test: ["CMD", "curl", "--fail", "http://localhost:${FLASK_PORT}/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+
+networks:
+  cricket_network:
+    driver: bridge
+
+volumes:
+  mongodb_data:
+  postgres_data:
+  airflow_data:

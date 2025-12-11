@@ -1,0 +1,446 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🏏 Cricket Central - Your Ultimate Cricket Hub</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+    <style>
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-top: 3rem;
+            padding: 2rem 0;
+        }
+
+        .feature-card {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            border-radius: 20px;
+            padding: 2rem;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .feature-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, rgba(46, 204, 113, 0.2), rgba(243, 156, 18, 0.2));
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-15px) scale(1.05);
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4);
+            border-color: var(--cricket-gold);
+        }
+
+        .feature-card:hover::before {
+            opacity: 1;
+        }
+
+        .feature-icon {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+            display: block;
+            position: relative;
+            z-index: 1;
+            animation: bounce 2s ease-in-out infinite;
+        }
+
+        @keyframes bounce {
+
+            0%,
+            100% {
+                transform: translateY(0);
+            }
+
+            50% {
+                transform: translateY(-10px);
+            }
+        }
+
+        .feature-card:hover .feature-icon {
+            animation: spin 0.5s ease;
+        }
+
+        .feature-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--white);
+            margin-bottom: 0.5rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        .feature-desc {
+            color: rgba(255, 255, 255, 0.9);
+            font-size: 1rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        .hero-animated-bg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            overflow: hidden;
+            z-index: 0;
+        }
+
+        .cricket-ball {
+            position: absolute;
+            width: 60px;
+            height: 60px;
+            background: radial-gradient(circle at 30% 30%, #ff6b6b, #c92a2a);
+            border-radius: 50%;
+            animation: float-ball 15s ease-in-out infinite;
+        }
+
+        @keyframes float-ball {
+
+            0%,
+            100% {
+                transform: translate(0, 0) rotate(0deg);
+            }
+
+            25% {
+                transform: translate(100px, -100px) rotate(90deg);
+            }
+
+            50% {
+                transform: translate(200px, 0) rotate(180deg);
+            }
+
+            75% {
+                transform: translate(100px, 100px) rotate(270deg);
+            }
+        }
+
+        .stats-section {
+            background: rgba(30, 132, 73, 0.3);
+            padding: 3rem 0;
+            margin-top: 4rem;
+            border-radius: 20px;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        .stat-card {
+            text-align: center;
+            padding: 1.5rem;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 15px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .stat-number {
+            font-size: 3rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #f39c12, #e67e22);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .cta-section {
+            text-align: center;
+            margin-top: 4rem;
+            padding: 3rem;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 20px;
+            border: 2px solid rgba(243, 156, 18, 0.3);
+        }
+
+        .btn-group {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-top: 2rem;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="container">
+            <div class="navbar-brand">
+                🏏 Cricket Central
+            </div>
+            <ul class="navbar-nav">
+                <li><a href="/" class="nav-link active">Home</a></li>
+                <li><a href="/dashboard" class="nav-link">Dashboard</a></li>
+                <li><a href="/quiz" class="nav-link">Quiz</a></li>
+                <li><a href="/games" class="nav-link">Games</a></li>
+                <li><a href="/predict" class="nav-link">AI Predict</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="hero-animated-bg">
+            <div class="cricket-ball" style="top: 10%; left: 10%;"></div>
+            <div class="cricket-ball" style="top: 60%; left: 80%; animation-delay: -5s;"></div>
+            <div class="cricket-ball" style="top: 80%; left: 20%; animation-delay: -10s;"></div>
+        </div>
+
+        <div class="hero-content">
+            <h1>🏏 Welcome to Cricket Central</h1>
+            <p>Your Ultimate Hub for Cricket Stats, Quizzes, Games & AI-Powered Shot Detection</p>
+            <div class="btn-group">
+                <a href="/dashboard" class="btn btn-primary">📊 Explore Dashboard</a>
+                <a href="/quiz" class="btn btn-gold">🎯 Test Your Knowledge</a>
+                <a href="/games" class="btn btn-outline">🎮 Play Games</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Grid -->
+    <section style="padding: 4rem 0;">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">Explore Everything Cricket</h2>
+                <p class="section-subtitle">Dive into the world of cricket with our comprehensive features</p>
+            </div>
+
+            <div class="feature-grid">
+                <!-- Dashboard -->
+                <a href="/dashboard" style="text-decoration: none;">
+                    <div class="feature-card">
+                        <span class="feature-icon">📊</span>
+                        <h3 class="feature-title">Cricket Dashboard</h3>
+                        <p class="feature-desc">Comprehensive stats, player profiles, team rankings, and live score
+                            simulations</p>
+                    </div>
+                </a>
+
+                <!-- MCQ Quiz -->
+                <a href="/quiz" style="text-decoration: none;">
+                    <div class="feature-card">
+                        <span class="feature-icon">🎯</span>
+                        <h3 class="feature-title">MCQ Quiz</h3>
+                        <p class="feature-desc">Test your cricket knowledge with 100+ questions across multiple
+                            categories</p>
+                    </div>
+                </a>
+
+                <!-- Games -->
+                <a href="/games" style="text-decoration: none;">
+                    <div class="feature-card">
+                        <span class="feature-icon">🎮</span>
+                        <h3 class="feature-title">Interactive Games</h3>
+                        <p class="feature-desc">Play cricket games, batting challenges, catching practice & trivia
+                            sprints</p>
+                    </div>
+                </a>
+
+                <!-- AI Shot Detection -->
+                <a href="/predict" style="text-decoration: none;">
+                    <div class="feature-card">
+                        <span class="feature-icon">🤖</span>
+                        <h3 class="feature-title">AI Shot Detector</h3>
+                        <p class="feature-desc">Upload cricket images and let AI identify shots with ML-powered accuracy
+                        </p>
+                    </div>
+                </a>
+
+                <!-- Cricket History -->
+                <a href="/dashboard#history" style="text-decoration: none;">
+                    <div class="feature-card">
+                        <span class="feature-icon">📜</span>
+                        <h3 class="feature-title">Cricket History</h3>
+                        <p class="feature-desc">Explore historic moments, legendary matches, and cricket evolution
+                            timeline</p>
+                    </div>
+                </a>
+
+                <!-- Rules & Formats -->
+                <a href="/dashboard#rules" style="text-decoration: none;">
+                    <div class="feature-card">
+                        <span class="feature-icon">📖</span>
+                        <h3 class="feature-title">Rules & Formats</h3>
+                        <p class="feature-desc">Learn cricket rules, formats (Test, ODI, T20), and scoring systems</p>
+                    </div>
+                </a>
+
+                <!-- Player Profiles -->
+                <a href="/dashboard#players" style="text-decoration: none;">
+                    <div class="feature-card">
+                        <span class="feature-icon">⭐</span>
+                        <h3 class="feature-title">Player Profiles</h3>
+                        <p class="feature-desc">Detailed stats and achievements of cricket legends and current stars</p>
+                    </div>
+                </a>
+
+                <!-- Team Rankings -->
+                <a href="/dashboard#rankings" style="text-decoration: none;">
+                    <div class="feature-card">
+                        <span class="feature-icon">🏆</span>
+                        <h3 class="feature-title">Team Rankings</h3>
+                        <p class="feature-desc">ICC rankings, team comparisons, and historical performance data</p>
+                    </div>
+                </a>
+
+                <!-- Famous Matches -->
+                <a href="/dashboard#matches" style="text-decoration: none;">
+                    <div class="feature-card">
+                        <span class="feature-icon">🎪</span>
+                        <h3 class="feature-title">Iconic Matches</h3>
+                        <p class="feature-desc">Relive the greatest cricket matches and unforgettable moments</p>
+                    </div>
+                </a>
+
+                <!-- Cricket News -->
+                <a href="/dashboard#news" style="text-decoration: none;">
+                    <div class="feature-card">
+                        <span class="feature-icon">📰</span>
+                        <h3 class="feature-title">Cricket Facts</h3>
+                        <p class="feature-desc">Daily cricket facts, records, trivia, and interesting statistics</p>
+                    </div>
+                </a>
+
+                <!-- Records -->
+                <a href="/dashboard#records" style="text-decoration: none;">
+                    <div class="feature-card">
+                        <span class="feature-icon">🥇</span>
+                        <h3 class="feature-title">World Records</h3>
+                        <p class="feature-desc">Highest scores, fastest centuries, best bowling figures & more</p>
+                    </div>
+                </a>
+
+                <!-- Tournaments -->
+                <a href="/dashboard#tournaments" style="text-decoration: none;">
+                    <div class="feature-card">
+                        <span class="feature-icon">🏆</span>
+                        <h3 class="feature-title">Tournaments</h3>
+                        <p class="feature-desc">World Cup, IPL, Ashes - Complete tournament history and winners</p>
+                    </div>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Stats Section -->
+    <section class="stats-section">
+        <div class="container">
+            <h2 class="section-title">Platform Statistics</h2>
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-number">100+</div>
+                    <div class="stat-label">Quiz Questions</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">50+</div>
+                    <div class="stat-label">Player Profiles</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">5</div>
+                    <div class="stat-label">Interactive Games</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">1000+</div>
+                    <div class="stat-label">Cricket Facts</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section>
+        <div class="container">
+            <div class="cta-section">
+                <h2 style="color: white;">Ready to Dive In?</h2>
+                <p style="color: rgba(255, 255, 255, 0.9); font-size: 1.2rem; margin-top: 1rem;">
+                    Start your cricket journey now with our comprehensive platform
+                </p>
+                <div class="btn-group">
+                    <a href="/dashboard" class="btn btn-primary">Get Started</a>
+                    <a href="/quiz" class="btn btn-gold">Take a Quiz</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <script>
+        // Add intersection observer for scroll animations
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -100px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.opacity = '1';
+                    entry.target.style.transform = 'translateY(0)';
+                }
+            });
+        }, observerOptions);
+
+        // Observe all feature cards
+        document.querySelectorAll('.feature-card').forEach(card => {
+            card.style.opacity = '0';
+            card.style.transform = 'translateY(50px)';
+            card.style.transition = 'all 0.6s ease';
+            observer.observe(card);
+        });
+
+        // Counter animation for stats
+        function animateCounter(element, target) {
+            let current = 0;
+            const increment = target / 50;
+            const timer = setInterval(() => {
+                current += increment;
+                if (current >= target) {
+                    element.textContent = target + '+';
+                    clearInterval(timer);
+                } else {
+                    element.textContent = Math.floor(current) + '+';
+                }
+            }, 30);
+        }
+
+        // Trigger counter animation when stats section is visible
+        const statsObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    document.querySelectorAll('.stat-number').forEach((stat, index) => {
+                        const values = [100, 50, 5, 1000];
+                        setTimeout(() => {
+                            animateCounter(stat, values[index]);
+                        }, index * 200);
+                    });
+                    statsObserver.unobserve(entry.target);
+                }
+            });
+        });
+
+        const statsSection = document.querySelector('.stats-section');
+        if (statsSection) {
+            statsObserver.observe(statsSection);
+        }
+    </script>
+</body>
+
+</html>

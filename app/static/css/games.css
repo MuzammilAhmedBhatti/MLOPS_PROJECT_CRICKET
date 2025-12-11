@@ -1,0 +1,451 @@
+/* Games Container */
+.games-container {
+    min-height: 100vh;
+    padding: 100px 2rem 2rem;
+}
+
+.games-screen {
+    display: none;
+    animation: fadeIn 0.5s ease;
+}
+
+.games-screen.active {
+    display: block;
+}
+
+/* Games Hero */
+.games-hero {
+    text-align: center;
+    margin-bottom: 3rem;
+}
+
+.games-hero h1 {
+    font-size: 3.5rem;
+    color: white;
+    margin-bottom: 1rem;
+    text-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+}
+
+.games-hero p {
+    font-size: 1.5rem;
+    color: rgba(255, 255, 255, 0.9);
+}
+
+/* Games Grid */
+.games-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+    gap: 2.5rem;
+    max-width: 1400px;
+    margin: 0 auto;
+}
+
+.game-card {
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    border: 3px solid rgba(255, 255, 255, 0.2);
+    border-radius: 24px;
+    padding: 2.5rem;
+    text-align: center;
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    cursor: pointer;
+}
+
+.game-card:hover {
+    transform: translateY(-15px);
+    border-color: var(--cricket-gold);
+    box-shadow: 0 25px 50px rgba(243, 156, 18, 0.4);
+}
+
+.game-icon {
+    font-size: 5rem;
+    margin-bottom: 1.5rem;
+    animation: bounce 2s ease-in-out infinite;
+}
+
+.game-card h2 {
+    color: white;
+    font-size: 2rem;
+    margin-bottom: 1rem;
+}
+
+.game-card p {
+    color: rgba(255, 255, 255, 0.8);
+    font-size: 1.1rem;
+    margin-bottom: 1.5rem;
+    line-height: 1.6;
+}
+
+.game-stats {
+    display: flex;
+    justify-content: space-around;
+    margin: 1.5rem 0;
+    padding: 1rem;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 12px;
+}
+
+.game-stats span {
+    color: rgba(255, 255, 255, 0.9);
+    font-size: 0.9rem;
+}
+
+/* Game Header */
+.game-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2rem;
+    flex-wrap: wrap;
+    gap: 1rem;
+}
+
+.game-score {
+    display: flex;
+    gap: 2rem;
+    font-size: 1.3rem;
+    font-weight: 700;
+    color: white;
+}
+
+.game-score span span {
+    color: var(--cricket-gold);
+}
+
+.back-btn {
+    padding: 0.8rem 1.5rem;
+}
+
+/* Canvas Arenas */
+.batting-arena,
+.catching-arena,
+.bowling-arena {
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 20px;
+    padding: 2rem;
+    text-align: center;
+}
+
+canvas {
+    max-width: 100%;
+    border-radius: 12px;
+    background: rgba(30, 132, 73, 0.3);
+    border: 2px solid rgba(255, 255, 255, 0.2);
+    cursor: crosshair;
+}
+
+.batting-instructions,
+.catching-instructions,
+.bowling-instructions {
+    color: white;
+    font-size: 1.2rem;
+    margin-top: 1.5rem;
+    padding: 1rem;
+    background: rgba(243, 156, 18, 0.2);
+    border-radius: 12px;
+    border: 2px solid rgba(243, 156, 18, 0.4);
+}
+
+/* Trivia Content */
+.trivia-content {
+    max-width: 900px;
+    margin: 0 auto;
+}
+
+.trivia-question {
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    border-radius: 20px;
+    padding: 3rem;
+    margin-bottom: 2rem;
+    border: 2px solid rgba(255, 255, 255, 0.2);
+    color: white;
+    font-size: 1.8rem;
+    text-align: center;
+    line-height: 1.5;
+}
+
+.trivia-options {
+    display: grid;
+    gap: 1.5rem;
+}
+
+.trivia-option {
+    background: rgba(255, 255, 255, 0.1);
+    border: 3px solid rgba(255, 255, 255, 0.2);
+    border-radius: 16px;
+    padding: 1.5rem 2rem;
+    color: white;
+    font-size: 1.2rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-align: left;
+}
+
+.trivia-option:hover {
+    border-color: var(--cricket-green);
+    background: rgba(46, 204, 113, 0.2);
+    transform: translateX(10px);
+}
+
+.trivia-option.correct {
+    background: rgba(46, 204, 113, 0.4);
+    border-color: var(--cricket-green);
+    animation: correctPulse 0.6s ease;
+}
+
+.trivia-option.wrong {
+    background: rgba(231, 76, 60, 0.4);
+    border-color: var(--cricket-red);
+    animation: wrongShake 0.6s ease;
+}
+
+.trivia-option.disabled {
+    pointer-events: none;
+    opacity: 0.6;
+}
+
+/* Memory Game */
+.memory-arena {
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.memory-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1.5rem;
+    padding: 2rem;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 20px;
+}
+
+.memory-card {
+    aspect-ratio: 1;
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    border: 3px solid rgba(255, 255, 255, 0.2);
+    border-radius: 16px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 3rem;
+    transition: all 0.4s ease;
+    position: relative;
+}
+
+.memory-card:hover {
+    transform: scale(1.05);
+    border-color: var(--cricket-gold);
+}
+
+.memory-card.flipped {
+    background: var(--gradient-gold);
+    border-color: var(--cricket-gold);
+    transform: rotateY(180deg);
+}
+
+.memory-card.matched {
+    background: var(--gradient-primary);
+    border-color: var(--cricket-green);
+    animation: matchPulse 0.6s ease;
+}
+
+.memory-card-front,
+.memory-card-back {
+    position: absolute;
+    backface-visibility: hidden;
+}
+
+.memory-card-back {
+    transform: rotateY(180deg);
+}
+
+@keyframes matchPulse {
+
+    0%,
+    100% {
+        transform: scale(1);
+    }
+
+    50% {
+        transform: scale(1.15);
+    }
+}
+
+/* Game Over Screen */
+.game-over-content {
+    text-align: center;
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 3rem;
+}
+
+.game-over-icon {
+    font-size: 8rem;
+    margin-bottom: 1.5rem;
+    animation: bounce 1s ease infinite;
+}
+
+.game-over-content h1 {
+    color: white;
+    font-size: 3.5rem;
+    margin-bottom: 2rem;
+}
+
+.game-over-stats {
+    display: flex;
+    justify-content: center;
+    gap: 3rem;
+    margin: 2rem 0;
+}
+
+.stat-item {
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    border-radius: 16px;
+    padding: 2rem;
+    border: 2px solid rgba(255, 255, 255, 0.2);
+    min-width: 200px;
+}
+
+.stat-label {
+    color: rgba(255, 255, 255, 0.8);
+    font-size: 1rem;
+    margin-bottom: 0.5rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.stat-value {
+    color: var(--cricket-gold);
+    font-size: 3rem;
+    font-weight: 800;
+    font-family: var(--font-heading);
+}
+
+.game-over-message {
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 16px;
+    padding: 2rem;
+    margin: 2rem 0;
+    border-left: 6px solid var(--cricket-gold);
+}
+
+.game-over-message h3 {
+    color: white;
+    font-size: 1.8rem;
+    margin-bottom: 0.5rem;
+}
+
+.game-over-message p {
+    color: rgba(255, 255, 255, 0.9);
+    font-size: 1.2rem;
+}
+
+.game-over-actions {
+    display: flex;
+    gap: 1.5rem;
+    justify-content: center;
+    margin-top: 2rem;
+}
+
+/* Animations */
+@keyframes bounce {
+
+    0%,
+    100% {
+        transform: translateY(0);
+    }
+
+    50% {
+        transform: translateY(-15px);
+    }
+}
+
+/* Responsive Design */
+@media (max-width: 1024px) {
+    .games-grid {
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    }
+}
+
+@media (max-width: 768px) {
+    .games-hero h1 {
+        font-size: 2.5rem;
+    }
+
+    .games-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .game-card {
+        padding: 2rem;
+    }
+
+    .game-icon {
+        font-size: 4rem;
+    }
+
+    .game-score {
+        flex-direction: column;
+        gap: 0.5rem;
+        font-size: 1.1rem;
+    }
+
+    .memory-grid {
+        gap: 1rem;
+        padding: 1rem;
+    }
+
+    .memory-card {
+        font-size: 2rem;
+    }
+
+    .game-over-stats {
+        flex-direction: column;
+        gap: 1.5rem;
+    }
+
+    .stat-item {
+        min-width: auto;
+    }
+
+    .game-over-actions {
+        flex-direction: column;
+        width: 100%;
+    }
+
+    .game-over-actions .btn {
+        width: 100%;
+    }
+
+    canvas {
+        width: 100% !important;
+        height: auto !important;
+    }
+}
+
+/* Special Effects */
+.hit-effect {
+    position: absolute;
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(243, 156, 18, 0.8), transparent);
+    pointer-events: none;
+    animation: hitExpand 0.6s ease-out;
+}
+
+@keyframes hitExpand {
+    from {
+        transform: scale(0);
+        opacity: 1;
+    }
+
+    to {
+        transform: scale(3);
+        opacity: 0;
+    }
+}

@@ -6,7 +6,7 @@ artifacts/model_files/cricket_shot_model.keras
 import os
 import traceback
 import numpy as np
-from flask import Flask, request, jsonify, render_template_string
+from flask import Flask, request, jsonify, render_template_string, render_template
 from werkzeug.utils import secure_filename
 from PIL import Image
 import mlflow
@@ -488,9 +488,37 @@ HOME_HTML = '''
 
 @app.route('/')
 def home():
-    """Home page"""
-    log_debug("home: rendering home page")
+    """Landing page"""
+    log_debug("home: rendering landing page")
     print("DEBUG: / (home) requested")
+    return render_template('landing.html')
+
+@app.route('/dashboard')
+def dashboard():
+    """Cricket dashboard page"""
+    log_debug("dashboard: rendering dashboard page")
+    print("DEBUG: /dashboard requested")
+    return render_template('dashboard.html')
+
+@app.route('/quiz')
+def quiz():
+    """Cricket quiz page"""
+    log_debug("quiz: rendering quiz page")
+    print("DEBUG: /quiz requested")
+    return render_template('quiz.html')
+
+@app.route('/games')
+def games():
+    """Cricket games page"""
+    log_debug("games: rendering games page")
+    print("DEBUG: /games requested")
+    return render_template('games.html')
+
+@app.route('/predict')
+def predict_page():
+    """ML prediction page (original)"""
+    log_debug("predict_page: rendering prediction page")
+    print("DEBUG: /predict (page) requested")
     return render_template_string(HOME_HTML)
 
 # ============================================

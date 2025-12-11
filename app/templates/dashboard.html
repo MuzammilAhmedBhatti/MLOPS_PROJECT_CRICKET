@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🏏 Cricket Dashboard - Cricket Central</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+    <link rel="stylesheet" href="/static/css/dashboard.css">
+</head>
+
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="container">
+            <div class="navbar-brand">
+                🏏 Cricket Central
+            </div>
+            <ul class="navbar-nav">
+                <li><a href="/" class="nav-link">Home</a></li>
+                <li><a href="/dashboard" class="nav-link active">Dashboard</a></li>
+                <li><a href="/quiz" class="nav-link">Quiz</a></li>
+                <li><a href="/games" class="nav-link">Games</a></li>
+                <li><a href="/predict" class="nav-link">AI Predict</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Dashboard Content -->
+    <div class="dashboard-container">
+        <!-- Sidebar Navigation -->
+        <aside class="dashboard-sidebar">
+            <h3 style="color: white; margin-bottom: 1.5rem;">Dashboard Menu</h3>
+            <ul class="sidebar-menu">
+                <li><a href="#overview" class="sidebar-link active" data-section="overview">📊 Overview</a></li>
+                <li><a href="#livescore" class="sidebar-link" data-section="livescore">📡 Live Score Simulator</a></li>
+                <li><a href="#players" class="sidebar-link" data-section="players">⭐ Player Profiles</a></li>
+                <li><a href="#rankings" class="sidebar-link" data-section="rankings">🏆 Team Rankings</a></li>
+                <li><a href="#records" class="sidebar-link" data-section="records">🥇 World Records</a></li>
+                <li><a href="#history" class="sidebar-link" data-section="history">📜 Cricket History</a></li>
+                <li><a href="#rules" class="sidebar-link" data-section="rules">📖 Rules & Formats</a></li>
+                <li><a href="#matches" class="sidebar-link" data-section="matches">🎪 Iconic Matches</a></li>
+                <li><a href="#tournaments" class="sidebar-link" data-section="tournaments">🏆 Tournaments</a></li>
+                <li><a href="#news" class="sidebar-link" data-section="news">📰 Cricket Facts</a></li>
+            </ul>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="dashboard-main">
+            <!-- Overview Section -->
+            <section id="overview" class="dashboard-section active">
+                <h1 class="page-title">Cricket Dashboard Overview</h1>
+
+                <!-- Quick Stats -->
+                <div class="stats-overview">
+                    <div class="stat-box-large">
+                        <div class="stat-icon">🏏</div>
+                        <div class="stat-value">2.5B+</div>
+                        <div class="stat-desc">Cricket Fans Worldwide</div>
+                    </div>
+                    <div class="stat-box-large">
+                        <div class="stat-icon">🌍</div>
+                        <div class="stat-value">108</div>
+                        <div class="stat-desc">ICC Member Countries</div>
+                    </div>
+                    <div class="stat-box-large">
+                        <div class="stat-icon">🏆</div>
+                        <div class="stat-value">13</div>
+                        <div class="stat-desc">World Cup Tournaments</div>
+                    </div>
+                    <div class="stat-box-large">
+                        <div class="stat-icon">⏱️</div>
+                        <div class="stat-value">1744</div>
+                        <div class="stat-desc">Test Matches Played</div>
+                    </div>
+                </div>
+
+                <!-- Featured Content -->
+                <div class="featured-grid">
+                    <div class="featured-card">
+                        <h3>🎯 Popular Formats</h3>
+                        <ul class="format-list">
+                            <li><strong>Test Cricket</strong> - The traditional 5-day format</li>
+                            <li><strong>One Day International (ODI)</strong> - 50 overs per side</li>
+                            <li><strong>Twenty20 (T20)</strong> - Fast-paced 20 overs format</li>
+                            <li><strong>T10</strong> - Latest 10 overs format</li>
+                        </ul>
+                    </div>
+
+                    <div class="featured-card">
+                        <h3>📈 Top Batting Averages (Test)</h3>
+                        <ol class="ranking-list">
+                            <li><strong>Don Bradman</strong> <span>99.94</span></li>
+                            <li><strong>Steve Smith</strong> <span>61.80</span></li>
+                            <li><strong>Marnus Labuschagne</strong> <span>60.18</span></li>
+                            <li><strong>Kane Williamson</strong> <span>54.21</span></li>
+                            <li><strong>Joe Root</strong> <span>50.68</span></li>
+                        </ol>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Live Score Simulator Section -->
+            <section id="livescore" class="dashboard-section">
+                <h1 class="page-title">📡 Live Score Simulator</h1>
+
+                <div class="live-score-container">
+                    <div class="match-header">
+                        <div class="team">
+                            <h2>🇮🇳 India</h2>
+                            <div class="score">
+                                <span class="runs" id="team1-runs">0</span>/
+                                <span class="wickets" id="team1-wickets">0</span>
+                                <span class="overs">(<span id="team1-overs">0.0</span> overs)</span>
+                            </div>
+                        </div>
+                        <div class="vs">VS</div>
+                        <div class="team">
+                            <h2>🇦🇺 Australia</h2>
+                            <div class="score">
+                                <span class="runs" id="team2-runs">0</span>/
+                                <span class="wickets" id="team2-wickets">0</span>
+                                <span class="overs">(<span id="team2-overs">0.0</span> overs)</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="match-controls">
+                        <button class="btn btn-primary" id="startMatch">Start Match</button>
+                        <button class="btn btn-gold" id="pauseMatch" disabled>Pause</button>
+                        <button class="btn btn-outline" id="resetMatch">Reset</button>
+                    </div>
+
+                    <div class="commentary-box">
+                        <h3>Commentary</h3>
+                        <div id="commentary" class="commentary-content">
+                            <p>Match not started yet. Click "Start Match" to begin!</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Player Profiles Section -->
+            <section id="players" class="dashboard-section">
+                <h1 class="page-title">⭐ Cricket Legends & Current Stars</h1>
+
+                <div class="players-grid" id="playersGrid">
+                    <!-- Players will be dynamically loaded -->
+                </div>
+            </section>
+
+            <!-- Team Rankings Section -->
+            <section id="rankings" class="dashboard-section">
+                <h1 class="page-title">🏆 ICC Team Rankings</h1>
+
+                <div class="rankings-container">
+                    <div class="ranking-table">
+                        <h3>Test Rankings</h3>
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Rank</th>
+                                    <th>Team</th>
+                                    <th>Rating</th>
+                                    <th>Points</th>
+                                </tr>
+                            </thead>
+                            <tbody id="test-rankings">
+                                <!-- Dynamic content -->
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div class="ranking-table">
+                        <h3>ODI Rankings</h3>
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Rank</th>
+                                    <th>Team</th>
+                                    <th>Rating</th>
+                                    <th>Points</th>
+                                </tr>
+                            </thead>
+                            <tbody id="odi-rankings">
+                                <!-- Dynamic content -->
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div class="ranking-table">
+                        <h3>T20I Rankings</h3>
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Rank</th>
+                                    <th>Team</th>
+                                    <th>Rating</th>
+                                    <th>Points</th>
+                                </tr>
+                            </thead>
+                            <tbody id="t20-rankings">
+                                <!-- Dynamic content -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <!-- World Records Section -->
+            <section id="records" class="dashboard-section">
+                <h1 class="page-title">🥇 Cricket World Records</h1>
+
+                <div class="records-grid">
+                    <div class="record-card">
+                        <div class="record-icon">🏏</div>
+                        <h3>Highest Individual Score (Test)</h3>
+                        <div class="record-value">400*</div>
+                        <p class="record-holder">Brian Lara (West Indies)</p>
+                        <p class="record-detail">vs England, 2004</p>
+                    </div>
+
+                    <div class="record-card">
+                        <div class="record-icon">🎯</div>
+                        <h3>Highest Individual Score (ODI)</h3>
+                        <div class="record-value">264</div>
+                        <p class="record-holder">Rohit Sharma (India)</p>
+                        <p class="record-detail">vs Sri Lanka, 2014</p>
+                    </div>
+
+                    <div class="record-card">
+                        <div class="record-icon">⚡</div>
+                        <h3>Fastest Century (ODI)</h3>
+                        <div class="record-value">31 Balls</div>
+                        <p class="record-holder">AB de Villiers (South Africa)</p>
+                        <p class="record-detail">vs West Indies, 2015</p>
+                    </div>
+
+                    <div class="record-card">
+                        <div class="record-icon">🎳</div>
+                        <h3>Best Bowling (Test)</h3>
+                        <div class="record-value">10/53</div>
+                        <p class="record-holder">Jim Laker (England)</p>
+                        <p class="record-detail">vs Australia, 1956</p>
+                    </div>
+
+                    <div class="record-card">
+                        <div class="record-icon">💯</div>
+                        <h3>Most Test Centuries</h3>
+                        <div class="record-value">51</div>
+                        <p class="record-holder">Sachin Tendulkar (India)</p>
+                        <p class="record-detail">1989-2013</p>
+                    </div>
+
+                    <div class="record-card">
+                        <div class="record-icon">🎪</div>
+                        <h3>Most Test Wickets</h3>
+                        <div class="record-value">800</div>
+                        <p class="record-holder">Muttiah Muralitharan (Sri Lanka)</p>
+                        <p class="record-detail">1992-2010</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Cricket History Section -->
+            <section id="history" class="dashboard-section">
+                <h1 class="page-title">📜 Cricket History Timeline</h1>
+
+                <div class="timeline" id="historyTimeline">
+                    <!-- Timeline will be dynamically loaded -->
+                </div>
+            </section>
+
+            <!-- Rules & Formats Section -->
+            <section id="rules" class="dashboard-section">
+                <h1 class="page-title">📖 Cricket Rules & Formats</h1>
+
+                <div class="rules-content" id="rulesContent">
+                    <!-- Rules content will be loaded dynamically -->
+                </div>
+            </section>
+
+            <!-- Iconic Matches Section -->
+            <section id="matches" class="dashboard-section">
+                <h1 class="page-title">🎪 Most Iconic Cricket Matches</h1>
+
+                <div class="matches-grid" id="iconicMatches">
+                    <!-- Matches will be loaded dynamically -->
+                </div>
+            </section>
+
+            <!-- Tournaments Section -->
+            <section id="tournaments" class="dashboard-section">
+                <h1 class="page-title">🏆 Major Cricket Tournaments</h1>
+
+                <div class="tournaments-grid" id="tournamentsGrid">
+                    <!-- Tournaments will be loaded dynamically -->
+                </div>
+            </section>
+
+            <!-- Cricket Facts Section -->
+            <section id="news" class="dashboard-section">
+                <h1 class="page-title">📰 Cricket Facts & Trivia</h1>
+
+                <div class="facts-container" id="factsContainer">
+                    <!-- Facts will be loaded dynamically -->
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <script src="/static/js/dashboard.js"></script>
+</body>
+
+</html>

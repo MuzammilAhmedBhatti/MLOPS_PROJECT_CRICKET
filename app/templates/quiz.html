@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🎯 Cricket Quiz - Cricket Central</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+    <link rel="stylesheet" href="/static/css/quiz.css">
+</head>
+
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="container">
+            <div class="navbar-brand">
+                🏏 Cricket Central
+            </div>
+            <ul class="navbar-nav">
+                <li><a href="/" class="nav-link">Home</a></li>
+                <li><a href="/dashboard" class="nav-link">Dashboard</a></li>
+                <li><a href="/quiz" class="nav-link active">Quiz</a></li>
+                <li><a href="/games" class="nav-link">Games</a></li>
+                <li><a href="/predict" class="nav-link">AI Predict</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Quiz Container -->
+    <div class="quiz-container">
+        <!-- Quiz Start Screen -->
+        <div id="quiz-start" class="quiz-screen active">
+            <div class="quiz-hero">
+                <h1>🎯 Cricket Knowledge Quiz</h1>
+                <p>Test your cricket expertise with 100+ questions!</p>
+            </div>
+
+            <div class="category-selection">
+                <h2>Choose Your Category</h2>
+                <div class="categories-grid">
+                    <div class="category-card" data-category="all">
+                        <div class="category-icon">🏏</div>
+                        <h3>All Topics</h3>
+                        <p>Mixed questions from all categories</p>
+                        <div class="category-count">100+ Questions</div>
+                    </div>
+
+                    <div class="category-card" data-category="batting">
+                        <div class="category-icon">🏏</div>
+                        <h3>Batting</h3>
+                        <p>Centuries, records, techniques</p>
+                        <div class="category-count">25 Questions</div>
+                    </div>
+
+                    <div class="category-card" data-category="bowling">
+                        <div class="category-icon">🎳</div>
+                        <h3>Bowling</h3>
+                        <p>Wickets, techniques, records</p>
+                        <div class="category-count">25 Questions</div>
+                    </div>
+
+                    <div class="category-card" data-category="history">
+                        <div class="category-icon">📜</div>
+                        <h3>History</h3>
+                        <p>Cricket evolution and milestones</p>
+                        <div class="category-count">25 Questions</div>
+                    </div>
+
+                    <div class="category-card" data-category="worldcup">
+                        <div class="category-icon">🏆</div>
+                        <h3>World Cups</h3>
+                        <p>Tournament history and records</p>
+                        <div class="category-count">25 Questions</div>
+                    </div>
+
+                    <div class="category-card" data-category="players">
+                        <div class="category-icon">⭐</div>
+                        <h3>Players</h3>
+                        <p>Legends and their achievements</p>
+                        <div class="category-count">25 Questions</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="difficulty-selection">
+                <h2>Select Difficulty</h2>
+                <div class="difficulty-buttons">
+                    <button class="btn btn-outline difficulty-btn active" data-difficulty="easy">
+                        😀 Easy
+                    </button>
+                    <button class="btn btn-outline difficulty-btn" data-difficulty="medium">
+                        😐 Medium
+                    </button>
+                    <button class="btn btn-outline difficulty-btn" data-difficulty="hard">
+                        😰 Hard
+                    </button>
+                </div>
+            </div>
+
+            <button class="btn btn-primary btn-large" id="start-quiz-btn">
+                Start Quiz 🎯
+            </button>
+        </div>
+
+        <!-- Quiz Question Screen -->
+        <div id="quiz-question" class="quiz-screen">
+            <div class="quiz-header">
+                <div class="quiz-progress">
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="progress-fill"></div>
+                    </div>
+                    <div class="progress-text">
+                        Question <span id="current-question">1</span> of <span id="total-questions">10</span>
+                    </div>
+                </div>
+
+                <div class="quiz-stats">
+                    <div class="stat">
+                        <span class="stat-label">Score</span>
+                        <span class="stat-value" id="current-score">0</span>
+                    </div>
+                    <div class="stat">
+                        <span class="stat-label">Time</span>
+                        <span class="stat-value" id="timer">30</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="question-container">
+                <div class="question-category" id="question-category"></div>
+                <h2 class="question-text" id="question-text"></h2>
+
+                <div class="options-container" id="options-container">
+                    <!-- Options will be dynamically loaded -->
+                </div>
+            </div>
+
+            <div class="quiz-controls">
+                <button class="btn btn-outline" id="quit-quiz">Quit Quiz</button>
+            </div>
+        </div>
+
+        <!-- Quiz Results Screen -->
+        <div id="quiz-results" class="quiz-screen">
+            <div class="results-container">
+                <div class="results-trophy">🏆</div>
+                <h1 class="results-title">Quiz Complete!</h1>
+
+                <div class="results-score">
+                    <div class="score-circle">
+                        <div class="score-value" id="final-score">0</div>
+                        <div class="score-total">/ <span id="final-total">10</span></div>
+                    </div>
+                </div>
+
+                <div class="results-stats">
+                    <div class="result-stat">
+                        <div class="result-icon">✅</div>
+                        <div class="result-label">Correct</div>
+                        <div class="result-value" id="correct-answers">0</div>
+                    </div>
+                    <div class="result-stat">
+                        <div class="result-icon">❌</div>
+                        <div class="result-label">Wrong</div>
+                        <div class="result-value" id="wrong-answers">0</div>
+                    </div>
+                    <div class="result-stat">
+                        <div class="result-icon">⏱️</div>
+                        <div class="result-label">Time</div>
+                        <div class="result-value" id="total-time">0s</div>
+                    </div>
+                    <div class="result-stat">
+                        <div class="result-icon">📊</div>
+                        <div class="result-label">Accuracy</div>
+                        <div class="result-value" id="accuracy">0%</div>
+                    </div>
+                </div>
+
+                <div class="results-message" id="results-message"></div>
+
+                <div class="results-actions">
+                    <button class="btn btn-primary" id="retake-quiz">Take Another Quiz</button>
+                    <a href="/dashboard" class="btn btn-gold">View Dashboard</a>
+                    <a href="/games" class="btn btn-outline">Play Games</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Confetti Canvas -->
+    <canvas id="confetti-canvas"></canvas>
+
+    <script src="/static/js/quiz.js"></script>
+</body>
+
+</html>
