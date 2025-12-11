@@ -1,0 +1,202 @@
+version: '3.8'
+
+services:
+  npm:
+    image: 'jc21/nginx-proxy-manager:latest'
+    restart: unless-stopped
+
+    ports:
+      - '80:80'
+      - '443:443'
+      - '81:81'
+
+    environment:
+      TZ: "Asia/Islamabad"
+    networks:
+      - cricket_network
+
+    volumes:
+      - ./npm_data:/data
+      - ./npm_letsencrypt:/etc/letsencrypt
+  # MongoDB Database
+  mongodb:
+    image: mongo:7.0
+    container_name: cricket_mongodb
+    restart: always
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: ${MONGO_INITDB_ROOT_USERNAME}
+      MONGO_INITDB_ROOT_PASSWORD: ${MONGO_INITDB_ROOT_PASSWORD}
+      MONGO_INITDB_DATABASE: ${MONGO_INITDB_DATABASE}
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongodb_data:/data/db
+    networks:
+      - cricket_network
+    healthcheck:
+      test: echo 'db.runCommand("ping").ok' | mongosh localhost:27017/test --quiet
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # PostgreSQL Database for Airflow
+  postgres:
+    image: postgres:15
+    container_name: cricket_postgres
+    restart: always
+    environment:
+      POSTGRES_USER: airflow
+      POSTGRES_PASSWORD: airflow
+      POSTGRES_DB: airflow
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - cricket_network
+    healthcheck:
+      test: ["CMD", "pg_isready", "-U", "airflow"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # Airflow Webserver
+  airflow-webserver:
+    image: apache/airflow:2.8.0-python3.10
+    container_name: cricket_airflow_webserver
+    restart: always
+    depends_on:
+      postgres:
+        condition: service_healthy
+      airflow-init:
+        condition: service_completed_successfully
+    environment:
+      AIRFLOW__CORE__EXECUTOR: ${AIRFLOW__CORE__EXECUTOR}
+      AIRFLOW__CORE__SQL_ALCHEMY_CONN: ${AIRFLOW__CORE__SQL_ALCHEMY_CONN}
+      AIRFLOW__CORE__FERNET_KEY: ${AIRFLOW__CORE__FERNET_KEY}
+      AIRFLOW__CORE__DAGS_ARE_PAUSED_AT_CREATION: ${AIRFLOW__CORE__DAGS_ARE_PAUSED_AT_CREATION}
+      AIRFLOW__CORE__LOAD_EXAMPLES: ${AIRFLOW__CORE__LOAD_EXAMPLES}
+      AIRFLOW__API__AUTH_BACKENDS: ${AIRFLOW__API__AUTH_BACKENDS}
+      _PIP_ADDITIONAL_REQUIREMENTS: 'mlflow dagshub requests'
+      DAGSHUB_USERNAME: ${DAGSHUB_USERNAME}
+      DAGSHUB_REPO: ${DAGSHUB_REPO}
+      DAGSHUB_TOKEN: ${DAGSHUB_TOKEN}
+      MLFLOW_TRACKING_URI: ${MLFLOW_TRACKING_URI}
+    volumes:
+      - ./airflow/dags:/opt/airflow/dags
+      - ./airflow/logs:/opt/airflow/logs
+      - ./airflow/plugins:/opt/airflow/plugins
+      - airflow_data:/opt/airflow
+    ports:
+      - "8080:8080"
+    command: webserver
+    networks:
+      - cricket_network
+    healthcheck:
+      test: ["CMD", "curl", "--fail", "http://localhost:8080/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+
+  # Airflow Scheduler
+  airflow-scheduler:
+    image: apache/airflow:2.8.0-python3.10
+    container_name: cricket_airflow_scheduler
+    restart: always
+    depends_on:
+      postgres:
+        condition: service_healthy
+      airflow-init:
+        condition: service_completed_successfully
+    environment:
+      AIRFLOW__CORE__EXECUTOR: ${AIRFLOW__CORE__EXECUTOR}
+      AIRFLOW__CORE__SQL_ALCHEMY_CONN: ${AIRFLOW__CORE__SQL_ALCHEMY_CONN}
+      AIRFLOW__CORE__FERNET_KEY: ${AIRFLOW__CORE__FERNET_KEY}
+      AIRFLOW__CORE__DAGS_ARE_PAUSED_AT_CREATION: ${AIRFLOW__CORE__DAGS_ARE_PAUSED_AT_CREATION}
+      AIRFLOW__CORE__LOAD_EXAMPLES: ${AIRFLOW__CORE__LOAD_EXAMPLES}
+      _PIP_ADDITIONAL_REQUIREMENTS: 'mlflow dagshub requests'
+      DAGSHUB_USERNAME: ${DAGSHUB_USERNAME}
+      DAGSHUB_REPO: ${DAGSHUB_REPO}
+      DAGSHUB_TOKEN: ${DAGSHUB_TOKEN}
+      MLFLOW_TRACKING_URI: ${MLFLOW_TRACKING_URI}
+    volumes:
+      - ./airflow/dags:/opt/airflow/dags
+      - ./airflow/logs:/opt/airflow/logs
+      - ./airflow/plugins:/opt/airflow/plugins
+      - airflow_data:/opt/airflow
+    command: scheduler
+    networks:
+      - cricket_network
+    healthcheck:
+      test: ["CMD-SHELL", 'airflow jobs check --job-type SchedulerJob --hostname "$${HOSTNAME}"']
+      interval: 30s
+      timeout: 10s
+      retries: 5
+
+  # Airflow Init
+  airflow-init:
+    image: apache/airflow:2.8.0-python3.10
+    container_name: cricket_airflow_init
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      AIRFLOW__CORE__EXECUTOR: ${AIRFLOW__CORE__EXECUTOR}
+      AIRFLOW__CORE__SQL_ALCHEMY_CONN: ${AIRFLOW__CORE__SQL_ALCHEMY_CONN}
+      AIRFLOW__CORE__FERNET_KEY: ${AIRFLOW__CORE__FERNET_KEY}
+      _AIRFLOW_DB_MIGRATE: 'true'
+      _AIRFLOW_WWW_USER_CREATE: 'true'
+      _AIRFLOW_WWW_USER_USERNAME: airflow
+      _AIRFLOW_WWW_USER_PASSWORD: airflow
+    volumes:
+      - ./airflow/dags:/opt/airflow/dags
+      - ./airflow/logs:/opt/airflow/logs
+      - ./airflow/plugins:/opt/airflow/plugins
+      - airflow_data:/opt/airflow
+    command: version
+    networks:
+      - cricket_network
+
+  # Flask Application
+  flask-app:
+    build:
+      context: ./app
+      dockerfile: Dockerfile
+    container_name: cricket_flask_app
+    restart: always
+    depends_on:
+      mongodb:
+        condition: service_healthy
+    environment:
+      DAGSHUB_USERNAME: ${DAGSHUB_USERNAME}
+      DAGSHUB_REPO: ${DAGSHUB_REPO}
+      DAGSHUB_TOKEN: ${DAGSHUB_TOKEN}
+      MLFLOW_TRACKING_URI: ${MLFLOW_TRACKING_URI}
+      MODEL_NAME: ${MODEL_NAME}
+      MODEL_STAGE: ${MODEL_STAGE}
+      MONGO_INITDB_ROOT_USERNAME: ${MONGO_INITDB_ROOT_USERNAME}
+      MONGO_INITDB_ROOT_PASSWORD: ${MONGO_INITDB_ROOT_PASSWORD}
+      MONGO_INITDB_DATABASE: ${MONGO_INITDB_DATABASE}
+      FLASK_ENV: ${FLASK_ENV}
+      FLASK_PORT: ${FLASK_PORT}
+      SECRET_KEY: ${SECRET_KEY}
+      MLFLOW_TRACKING_USERNAME: ${DAGSHUB_USERNAME}
+      MLFLOW_TRACKING_PASSWORD: ${DAGSHUB_TOKEN}
+    ports:
+      - "${FLASK_PORT}:5000"
+    volumes:
+      - ./app/static/uploads:/app/static/uploads
+    networks:
+      - cricket_network
+    healthcheck:
+      test: ["CMD", "curl", "--fail", "http://localhost:5000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+
+networks:
+  cricket_network:
+    driver: bridge
+
+volumes:
+  mongodb_data:
+  postgres_data:
+  airflow_data:

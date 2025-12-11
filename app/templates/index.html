@@ -1,0 +1,820 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cricket Shot Detection - AI Powered Analysis</title>
+    <meta name="description" content="Detect cricket shots using advanced AI technology powered by MLFlow and DagsHub">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary-color: #00c853;
+            --secondary-color: #1e88e5;
+            --accent-color: #ff6d00;
+            --bg-dark: #0a0e27;
+            --bg-card: #141829;
+            --bg-card-hover: #1a1f3a;
+            --text-primary: #ffffff;
+            --text-secondary: #b0b8c9;
+            --success: #00e676;
+            --error: #ff1744;
+            --gradient-1: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --gradient-2: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            --gradient-3: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--bg-dark);
+            color: var(--text-primary);
+            min-height: 100vh;
+            background-image: 
+                radial-gradient(circle at 20% 50%, rgba(102, 126, 234, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 80% 80%, rgba(118, 75, 162, 0.1) 0%, transparent 50%);
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        /* Header */
+        header {
+            text-align: center;
+            padding: 3rem 0;
+            animation: fadeInDown 0.8s ease-out;
+        }
+
+        h1 {
+            font-size: clamp(2rem, 5vw, 3.5rem);
+            font-weight: 800;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 0.5rem;
+            letter-spacing: -0.5px;
+        }
+
+        .subtitle {
+            color: var(--text-secondary);
+            font-size: 1.1rem;
+            font-weight: 400;
+        }
+
+        /* Model Status Bar */
+        .status-bar {
+            background: var(--bg-card);
+            border-radius: 16px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 1rem;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            animation: fadeInUp 0.8s ease-out 0.2s backwards;
+        }
+
+        .status-item {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .status-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: var(--success);
+            box-shadow: 0 0 20px var(--success);
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        .status-label {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        .status-value {
+            color: var(--text-primary);
+            font-weight: 600;
+            margin-left: 0.5rem;
+        }
+
+        /* Main Grid */
+        .main-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        @media (max-width: 968px) {
+            .main-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Card Styles */
+        .card {
+            background: var(--bg-card);
+            border-radius: 20px;
+            padding: 2rem;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            transition: all 0.3s ease;
+            animation: fadeInUp 0.8s ease-out 0.4s backwards;
+        }
+
+        .card:hover {
+            background: var(--bg-card-hover);
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            transform: translateY(-5px);
+        }
+
+        .card-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .card-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+        }
+
+        /* Upload Area */
+        .upload-area {
+            border: 3px dashed rgba(102, 126, 234, 0.3);
+            border-radius: 16px;
+            padding: 3rem 2rem;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            background: rgba(102, 126, 234, 0.03);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .upload-area::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(102, 126, 234, 0.1) 0%, transparent 70%);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .upload-area:hover {
+            border-color: rgba(102, 126, 234, 0.6);
+            background: rgba(102, 126, 234, 0.08);
+        }
+
+        .upload-area:hover::before {
+            opacity: 1;
+        }
+
+        .upload-area.dragover {
+            border-color: var(--primary-color);
+            background: rgba(0, 200, 83, 0.1);
+        }
+
+        .upload-icon {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+            opacity: 0.8;
+        }
+
+        .upload-text {
+            font-size: 1.1rem;
+            color: var(--text-secondary);
+            margin-bottom: 0.5rem;
+        }
+
+        .upload-hint {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            opacity: 0.7;
+        }
+
+        #fileInput {
+            display: none;
+        }
+
+        /* Button */
+        .btn {
+            background: var(--gradient-1);
+            color: white;
+            border: none;
+            padding: 1rem 2.5rem;
+            border-radius: 12px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.3);
+            display: inline-block;
+            margin-top: 1rem;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 15px 40px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        /* Preview */
+        .preview-container {
+            margin-top: 1.5rem;
+            display: none;
+        }
+
+        .preview-container.show {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .preview-image {
+            width: 100%;
+            border-radius: 12px;
+            margin-bottom: 1rem;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        }
+
+        /* Result */
+        .result-container {
+            display: none;
+            padding: 2rem;
+            background: linear-gradient(135deg, rgba(0, 200, 83, 0.1) 0%, rgba(0, 200, 83, 0.05) 100%);
+            border-radius: 16px;
+            border: 1px solid rgba(0, 200, 83, 0.3);
+            margin-top: 1.5rem;
+        }
+
+        .result-container.show {
+            display: block;
+            animation: scaleIn 0.5s ease;
+        }
+
+        .result-title {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            margin-bottom: 0.5rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .result-value {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--success);
+            margin-bottom: 1rem;
+        }
+
+        .confidence-bar {
+            background: rgba(255, 255, 255, 0.1);
+            height: 12px;
+            border-radius: 6px;
+            overflow: hidden;
+            margin-bottom: 0.5rem;
+        }
+
+        .confidence-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--success) 0%, var(--primary-color) 100%);
+            transition: width 1s ease;
+            border-radius: 6px;
+        }
+
+        .confidence-text {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+        }
+
+        /* Statistics */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .stat-card {
+            background: rgba(255, 255, 255, 0.03);
+            padding: 1.5rem;
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        .stat-card:hover {
+            background: rgba(255, 255, 255, 0.05);
+            transform: translateY(-2px);
+        }
+
+        .stat-value {
+            font-size: 2rem;
+            font-weight: 700;
+            background: var(--gradient-3);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .stat-label {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            margin-top: 0.5rem;
+        }
+
+        /* Recent Predictions */
+        .predictions-list {
+            margin-top: 1rem;
+        }
+
+        .prediction-item {
+            background: rgba(255, 255, 255, 0.03);
+            padding: 1rem;
+            border-radius: 12px;
+            margin-bottom: 0.75rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            transition: all 0.2s ease;
+        }
+
+        .prediction-item:hover {
+            background: rgba(255, 255, 255, 0.05);
+            transform: translateX(5px);
+        }
+
+        .prediction-class {
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .prediction-confidence {
+            color: var(--success);
+            font-weight: 600;
+        }
+
+        .prediction-time {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+        }
+
+        /* Loading Spinner */
+        .spinner {
+            border: 3px solid rgba(255, 255, 255, 0.1);
+            border-top: 3px solid var(--primary-color);
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 2rem auto;
+            display: none;
+        }
+
+        .spinner.show {
+            display: block;
+        }
+
+        /* Animations */
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes scaleIn {
+            from {
+                opacity: 0;
+                transform: scale(0.9);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Alert */
+        .alert {
+            padding: 1rem;
+            border-radius: 12px;
+            margin-top: 1rem;
+            display: none;
+        }
+
+        .alert.show {
+            display: block;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .alert-error {
+            background: rgba(255, 23, 68, 0.1);
+            border: 1px solid rgba(255, 23, 68, 0.3);
+            color: var(--error);
+        }
+
+        /* Footer */
+        footer {
+            text-align: center;
+            padding: 2rem;
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        footer a {
+            color: var(--primary-color);
+            text-decoration: none;
+            transition: color 0.2s ease;
+        }
+
+        footer a:hover {
+            color: var(--success);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🏏 Cricket Shot Detection</h1>
+            <p class="subtitle">AI-Powered Cricket Shot Analysis using MLFlow & DagsHub</p>
+        </header>
+
+        <!-- Model Status -->
+        <div class="status-bar">
+            <div class="status-item">
+                <div class="status-dot"></div>
+                <span class="status-label">Model Status:</span>
+                <span class="status-value" id="modelStatus">Loading...</span>
+            </div>
+            <div class="status-item">
+                <span class="status-label">Total Predictions:</span>
+                <span class="status-value" id="totalPredictions">0</span>
+            </div>
+            <div class="status-item">
+                <span class="status-label">Model Version:</span>
+                <span class="status-value">Production</span>
+            </div>
+        </div>
+
+        <!-- Main Grid -->
+        <div class="main-grid">
+            <!-- Upload & Predict Card -->
+            <div class="card">
+                <h2 class="card-title">
+                    <div class="card-icon" style="background: var(--gradient-1);">📸</div>
+                    Upload Image
+                </h2>
+                
+                <div class="upload-area" id="uploadArea">
+                    <div class="upload-icon">🏏</div>
+                    <p class="upload-text">Click to upload or drag and drop</p>
+                    <p class="upload-hint">PNG, JPG, JPEG or GIF (MAX. 16MB)</p>
+                    <input type="file" id="fileInput" accept="image/*">
+                </div>
+
+                <div class="preview-container" id="previewContainer">
+                    <img id="previewImage" class="preview-image" alt="Preview">
+                    <button class="btn" id="predictBtn">Detect Cricket Shot</button>
+                </div>
+
+                <div class="spinner" id="spinner"></div>
+
+                <div class="alert alert-error" id="errorAlert"></div>
+
+                <div class="result-container" id="resultContainer">
+                    <p class="result-title">Detected Shot</p>
+                    <div class="result-value" id="predictionResult">-</div>
+                    <div class="confidence-bar">
+                        <div class="confidence-fill" id="confidenceFill" style="width: 0%"></div>
+                    </div>
+                    <p class="confidence-text">Confidence: <strong id="confidenceValue">0%</strong></p>
+                </div>
+            </div>
+
+            <!-- Recent Predictions Card -->
+            <div class="card">
+                <h2 class="card-title">
+                    <div class="card-icon" style="background: var(--gradient-2);">📊</div>
+                    Recent Predictions
+                </h2>
+                <div class="predictions-list" id="predictionsList">
+                    <p style="text-align: center; color: var(--text-secondary);">No predictions yet</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Statistics Card -->
+        <div class="card">
+            <h2 class="card-title">
+                <div class="card-icon" style="background: var(--gradient-3);">📈</div>
+                Statistics
+            </h2>
+            <div class="stats-grid" id="statsGrid">
+                <div class="stat-card">
+                    <div class="stat-value" id="statTotal">0</div>
+                    <div class="stat-label">Total Predictions</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <p>Powered by <a href="https://dagshub.com" target="_blank">DagsHub</a> • <a href="https://mlflow.org" target="_blank">MLFlow</a> • <a href="https://www.tensorflow.org" target="_blank">TensorFlow</a></p>
+        <p style="margin-top: 0.5rem;">Built with ❤️ by Muzammil Ahmed Bhatti</p>
+    </footer>
+
+    <script>
+        // Global variables
+        let selectedFile = null;
+
+        // DOM Elements
+        const uploadArea = document.getElementById('uploadArea');
+        const fileInput = document.getElementById('fileInput');
+        const previewContainer = document.getElementById('previewContainer');
+        const previewImage = document.getElementById('previewImage');
+        const predictBtn = document.getElementById('predictBtn');
+        const spinner = document.getElementById('spinner');
+        const errorAlert = document.getElementById('errorAlert');
+        const resultContainer = document.getElementById('resultContainer');
+        const predictionResult = document.getElementById('predictionResult');
+        const confidenceFill = document.getElementById('confidenceFill');
+        const confidenceValue = document.getElementById('confidenceValue');
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', () => {
+            loadModelInfo();
+            loadRecentPredictions();
+            loadStatistics();
+        });
+
+        // Upload area click
+        uploadArea.addEventListener('click', () => fileInput.click());
+
+        // File input change
+        fileInput.addEventListener('change', handleFileSelect);
+
+        // Drag and drop
+        uploadArea.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            uploadArea.classList.add('dragover');
+        });
+
+        uploadArea.addEventListener('dragleave', () => {
+            uploadArea.classList.remove('dragover');
+        });
+
+        uploadArea.addEventListener('drop', (e) => {
+            e.preventDefault();
+            uploadArea.classList.remove('dragover');
+            const files = e.dataTransfer.files;
+            if (files.length > 0) {
+                handleFile(files[0]);
+            }
+        });
+
+        // Handle file selection
+        function handleFileSelect(e) {
+            const files = e.target.files;
+            if (files.length > 0) {
+                handleFile(files[0]);
+            }
+        }
+
+        // Handle file
+        function handleFile(file) {
+            // Validate file type
+            if (!file.type.startsWith('image/')) {
+                showError('Please upload an image file');
+                return;
+            }
+
+            // Validate file size (16MB)
+            if (file.size > 16 * 1024 * 1024) {
+                showError('File size must be less than 16MB');
+                return;
+            }
+
+            selectedFile = file;
+            
+            // Show preview
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                previewImage.src = e.target.result;
+                previewContainer.classList.add('show');
+                resultContainer.classList.remove('show');
+                hideError();
+            };
+            reader.readAsDataURL(file);
+        }
+
+        // Predict button click
+        predictBtn.addEventListener('click', makePrediction);
+
+        // Make prediction
+        async function makePrediction() {
+            if (!selectedFile) {
+                showError('Please select an image first');
+                return;
+            }
+
+            try {
+                // Show spinner
+                spinner.classList.add('show');
+                predictBtn.disabled = true;
+                resultContainer.classList.remove('show');
+                hideError();
+
+                // Create form data
+                const formData = new FormData();
+                formData.append('file', selectedFile);
+
+                // Make request
+                const response = await fetch('/predict', {
+                    method: 'POST',
+                    body: formData
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    // Show result
+                    predictionResult.textContent = data.prediction;
+                    confidenceValue.textContent = data.confidence + '%';
+                    confidenceFill.style.width = data.confidence + '%';
+                    resultContainer.classList.add('show');
+
+                    // Reload predictions and statistics
+                    loadRecentPredictions();
+                    loadStatistics();
+                } else {
+                    showError(data.error || 'Prediction failed');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                showError('Failed to make prediction. Please try again.');
+            } finally {
+                spinner.classList.remove('show');
+                predictBtn.disabled = false;
+            }
+        }
+
+        // Load model info
+        async function loadModelInfo() {
+            try {
+                const response = await fetch('/model-info');
+                const data = await response.json();
+                
+                const statusEl = document.getElementById('modelStatus');
+                if (data.status === 'loaded') {
+                    statusEl.textContent = 'Ready';
+                    statusEl.style.color = 'var(--success)';
+                } else {
+                    statusEl.textContent = 'Not Loaded';
+                    statusEl.style.color = 'var(--error)';
+                }
+            } catch (error) {
+                console.error('Error loading model info:', error);
+            }
+        }
+
+        // Load recent predictions
+        async function loadRecentPredictions() {
+            try {
+                const response = await fetch('/recent-predictions?limit=5');
+                const predictions = await response.json();
+                
+                const listEl = document.getElementById('predictionsList');
+                
+                if (predictions.length === 0) {
+                    listEl.innerHTML = '<p style="text-align: center; color: var(--text-secondary);">No predictions yet</p>';
+                    return;
+                }
+
+                listEl.innerHTML = predictions.map(pred => `
+                    <div class="prediction-item">
+                        <div>
+                            <div class="prediction-class">${pred.prediction}</div>
+                            <div class="prediction-time">${new Date(pred.timestamp).toLocaleString()}</div>
+                        </div>
+                        <div class="prediction-confidence">${(pred.confidence * 100).toFixed(1)}%</div>
+                    </div>
+                `).join('');
+            } catch (error) {
+                console.error('Error loading predictions:', error);
+            }
+        }
+
+        // Load statistics
+        async function loadStatistics() {
+            try {
+                const response = await fetch('/statistics');
+                const stats = await response.json();
+                
+                document.getElementById('totalPredictions').textContent = stats.total_predictions;
+                document.getElementById('statTotal').textContent = stats.total_predictions;
+
+                // Update stats grid with distribution
+                const statsGrid = document.getElementById('statsGrid');
+                
+                if (stats.distribution && stats.distribution.length > 0) {
+                    const distributionHTML = stats.distribution.slice(0, 5).map(item => `
+                        <div class="stat-card">
+                            <div class="stat-value">${item.count}</div>
+                            <div class="stat-label">${item._id}</div>
+                        </div>
+                    `).join('');
+                    
+                    statsGrid.innerHTML = `
+                        <div class="stat-card">
+                            <div class="stat-value">${stats.total_predictions}</div>
+                            <div class="stat-label">Total Predictions</div>
+                        </div>
+                        ${distributionHTML}
+                    `;
+                }
+            } catch (error) {
+                console.error('Error loading statistics:', error);
+            }
+        }
+
+        // Show error
+        function showError(message) {
+            errorAlert.textContent = message;
+            errorAlert.classList.add('show');
+        }
+
+        // Hide error
+        function hideError() {
+            errorAlert.classList.remove('show');
+        }
+
+        // Auto-refresh predictions and statistics every 30 seconds
+        setInterval(() => {
+            loadRecentPredictions();
+            loadStatistics();
+        }, 30000);
+    </script>
+</body>
+</html>
