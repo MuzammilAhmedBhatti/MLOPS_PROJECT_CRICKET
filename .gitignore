@@ -55,3 +55,6 @@ predictions/
 
 # Docker
 *.log
+
+npm_data
+npm_letsencrypt
