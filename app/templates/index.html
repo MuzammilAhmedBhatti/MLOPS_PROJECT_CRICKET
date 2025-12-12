@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,7 +8,8 @@
     <meta name="description" content="Detect cricket shots using advanced AI technology powered by MLFlow and DagsHub">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
+        rel="stylesheet">
     <style>
         * {
             margin: 0;
@@ -33,12 +35,13 @@
 
         body {
             font-family: 'Inter', sans-serif;
-            background: var(--bg-dark);
+            background: linear-gradient(135deg, #0a4d2e 0%, #1e8449 50%, #27ae60 100%);
             color: var(--text-primary);
+
             min-height: 100vh;
-            background-image: 
-                radial-gradient(circle at 20% 50%, rgba(102, 126, 234, 0.1) 0%, transparent 50%),
-                radial-gradient(circle at 80% 80%, rgba(118, 75, 162, 0.1) 0%, transparent 50%);
+            background-image:
+                radial-gradient(circle at 20% 50%, rgba(46, 204, 113, 0.15) 0%, transparent 50%),
+                radial-gradient(circle at 80% 80%, rgba(30, 132, 73, 0.15) 0%, transparent 50%);
         }
 
         .container {
@@ -413,6 +416,7 @@
                 opacity: 0;
                 transform: translateY(-20px);
             }
+
             to {
                 opacity: 1;
                 transform: translateY(0);
@@ -424,6 +428,7 @@
                 opacity: 0;
                 transform: translateY(20px);
             }
+
             to {
                 opacity: 1;
                 transform: translateY(0);
@@ -431,8 +436,13 @@
         }
 
         @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
+            from {
+                opacity: 0;
+            }
+
+            to {
+                opacity: 1;
+            }
         }
 
         @keyframes scaleIn {
@@ -440,6 +450,7 @@
                 opacity: 0;
                 transform: scale(0.9);
             }
+
             to {
                 opacity: 1;
                 transform: scale(1);
@@ -447,13 +458,25 @@
         }
 
         @keyframes pulse {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.5; }
+
+            0%,
+            100% {
+                opacity: 1;
+            }
+
+            50% {
+                opacity: 0.5;
+            }
         }
 
         @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
         }
 
         /* Alert */
@@ -494,6 +517,7 @@
         }
     </style>
 </head>
+
 <body>
     <div class="container">
         <header>
@@ -526,7 +550,7 @@
                     <div class="card-icon" style="background: var(--gradient-1);">📸</div>
                     Upload Image
                 </h2>
-                
+
                 <div class="upload-area" id="uploadArea">
                     <div class="upload-icon">🏏</div>
                     <p class="upload-text">Click to upload or drag and drop</p>
@@ -581,7 +605,8 @@
     </div>
 
     <footer>
-        <p>Powered by <a href="https://dagshub.com" target="_blank">DagsHub</a> • <a href="https://mlflow.org" target="_blank">MLFlow</a> • <a href="https://www.tensorflow.org" target="_blank">TensorFlow</a></p>
+        <p>Powered by <a href="https://dagshub.com" target="_blank">DagsHub</a> • <a href="https://mlflow.org"
+                target="_blank">MLFlow</a> • <a href="https://www.tensorflow.org" target="_blank">TensorFlow</a></p>
         <p style="margin-top: 0.5rem;">Built with ❤️ by Muzammil Ahmed Bhatti</p>
     </footer>
 
@@ -657,7 +682,7 @@
             }
 
             selectedFile = file;
-            
+
             // Show preview
             const reader = new FileReader();
             reader.onload = (e) => {
@@ -725,7 +750,7 @@
             try {
                 const response = await fetch('/model-info');
                 const data = await response.json();
-                
+
                 const statusEl = document.getElementById('modelStatus');
                 if (data.status === 'loaded') {
                     statusEl.textContent = 'Ready';
@@ -744,9 +769,9 @@
             try {
                 const response = await fetch('/recent-predictions?limit=5');
                 const predictions = await response.json();
-                
+
                 const listEl = document.getElementById('predictionsList');
-                
+
                 if (predictions.length === 0) {
                     listEl.innerHTML = '<p style="text-align: center; color: var(--text-secondary);">No predictions yet</p>';
                     return;
@@ -771,13 +796,13 @@
             try {
                 const response = await fetch('/statistics');
                 const stats = await response.json();
-                
+
                 document.getElementById('totalPredictions').textContent = stats.total_predictions;
                 document.getElementById('statTotal').textContent = stats.total_predictions;
 
                 // Update stats grid with distribution
                 const statsGrid = document.getElementById('statsGrid');
-                
+
                 if (stats.distribution && stats.distribution.length > 0) {
                     const distributionHTML = stats.distribution.slice(0, 5).map(item => `
                         <div class="stat-card">
@@ -785,7 +810,7 @@
                             <div class="stat-label">${item._id}</div>
                         </div>
                     `).join('');
-                    
+
                     statsGrid.innerHTML = `
                         <div class="stat-card">
                             <div class="stat-value">${stats.total_predictions}</div>
@@ -817,4 +842,5 @@
         }, 30000);
     </script>
 </body>
+
 </html>
